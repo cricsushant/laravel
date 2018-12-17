@@ -22,4 +22,4 @@
 */
 
 Route::get('/','PagesController@index');
-Route::get('/','PagesController@services');
+Route::get('/services','PagesController@services');
