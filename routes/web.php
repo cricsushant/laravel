@@ -23,3 +23,4 @@
 
 Route::get('/','PagesController@index');
 Route::get('/services','PagesController@services');
+Route::resource('posts','postsController');
