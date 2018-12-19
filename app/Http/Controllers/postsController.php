@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Post;
+use DB;
 
 class postsController extends Controller
 {
@@ -13,9 +15,13 @@ class postsController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
-
-        return view('post.index')->with('post',$posts);
+        //return Post::where('title','post two')->get();
+        //$posts= Post::all();
+        //$posts= DB::select('SELECT * FROM posts');
+        //$posts = Post::orderBy('title','desc')->get();
+        //$posts = Post::orderBy('title','desc')->take(1)->get();
+        $posts = Post::orderBy('title','desc')->paginate(11);
+        return view('posts.index')->with('posts',$posts);
     }
 
     /**
@@ -25,7 +31,7 @@ class postsController extends Controller
      */
     public function create()
     {
-        //
+       return view('posts.create'); 
     }
 
     /**
@@ -36,8 +42,17 @@ class postsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        /*$this->validate($request,[
+            'title'=>'required',
+            'body'=>'required'
+        ]);*/
+      $post=new Post();
+      $post->title=$request->input('title');
+      $post->body=$request->input('body');  
+      $post->save(); 
+      return redirect('/posts')->with('success','Post Created');
     }
+
 
     /**
      * Display the specified resource.
@@ -47,7 +62,8 @@ class postsController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return view('posts.show')->with('post',$post);
     }
 
     /**
@@ -58,7 +74,8 @@ class postsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        return view('posts.edit')->with('post',$post);
     }
 
     /**
@@ -70,7 +87,16 @@ class postsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'title'=>'required',
+            'body'=>'required'
+        ]);
+        //edit post
+      $post=Post::find($id);
+      $post->title=$request->input('title');
+      $post->body=$request->input('body');  
+      $post->save(); 
+      return redirect('/posts')->with('success','Post Updated');
     }
 
     /**
@@ -81,6 +107,8 @@ class postsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id);
+        $post->delete(); 
+      return redirect('/posts')->with('success','Post Deleted');
     }
 }
